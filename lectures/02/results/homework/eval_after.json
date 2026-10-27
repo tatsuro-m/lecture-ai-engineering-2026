@@ -1,0 +1,201 @@
+{
+  "summary": {
+    "label": "after",
+    "n": 21,
+    "format_rate": 1.0,
+    "content_rate": 0.9523809523809523,
+    "both_rate": 0.9523809523809523,
+    "seconds": 43.4
+  },
+  "rows": [
+    {
+      "question": "会議室の利用時間は？",
+      "raw": "{\"answer\": \"1 回の予約で利用できる時間は 2 時間までです。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": false,
+      "both_ok": false,
+      "gold_needs_review": false
+    },
+    {
+      "question": "会議室を利用できる曜日と開始・終了時刻は？",
+      "raw": "{\"answer\": \"会議室を利用できるのは平日 09:00〜18:00 です。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "会議室の営業日と営業時間を知りたいです",
+      "raw": "{\"answer\": \"会議室を利用できるのは平日 09:00〜18:00 です。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "予約開始日の決まりは？",
+      "raw": "{\"answer\": \"予約は利用日の 14 日前から受け付けます。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "利用予定日の何日前から申し込めますか",
+      "raw": "{\"answer\": \"予約は利用日の 14 日前から受け付けます。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "会議室の予約が可能になるのはいつからですか",
+      "raw": "{\"answer\": \"予約は利用日の 14 日前から受け付けます。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "利用時間の上限を教えてください",
+      "raw": "{\"answer\": \"1 回の予約で利用できる時間は 2 時間までです。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "予約 1 件あたりの最長利用時間は？",
+      "raw": "{\"answer\": \"1 回の予約で利用できる時間は 2 時間までです。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "1 枠で確保できる時間を教えてください",
+      "raw": "{\"answer\": \"1 回の予約で利用できる時間は 2 時間までです。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "何名まで利用できますか",
+      "raw": "{\"answer\": \"会議室の定員は 8 名です。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "会議室の定員は何名ですか",
+      "raw": "{\"answer\": \"会議室の定員は 8 名です。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "この会議室の最大収容人数を教えてください",
+      "raw": "{\"answer\": \"会議室の定員は 8 名です。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "予約取消しは何時間前までにどこで行いますか",
+      "raw": "{\"answer\": \"キャンセルは利用開始の 1 時間前まで予約画面から行えます。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "利用を取りやめたい場合の期限と操作場所は？",
+      "raw": "{\"answer\": \"キャンセルは利用開始の 1 時間前まで予約画面から行えます。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "予約を取り消すにはどこから、いつまでに手続きしますか",
+      "raw": "{\"answer\": \"キャンセルは利用開始の 1 時間前まで予約画面から行えます。\", \"needs_review\": false}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": false
+    },
+    {
+      "question": "社外の人も利用できますか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。施設管理者に確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    },
+    {
+      "question": "駐車場は利用できますか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。施設管理者に確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    },
+    {
+      "question": "ホワイトボードはありますか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。施設管理者に確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    },
+    {
+      "question": "利用料金はいつ支払いますか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。施設管理者に確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    },
+    {
+      "question": "オンライン会議用のマイクは借りられますか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。施設管理者に確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    },
+    {
+      "question": "キャンセル料はかかりますか",
+      "raw": "{\"answer\": \"この FAQ には記載がありません。施設管理者に確認が必要です。\", \"needs_review\": true}",
+      "format_ok": true,
+      "format_reason": "",
+      "content_ok": true,
+      "both_ok": true,
+      "gold_needs_review": true
+    }
+  ]
+}
