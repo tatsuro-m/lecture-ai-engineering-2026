@@ -40,22 +40,24 @@ rm "$before_rubric"
 
 **実装レベル**に取り組んだ。第3回で作った学習支援エージェント向けに、サブエージェントと質問・期待する振る舞いを10件作り、別のサブエージェントが用語集の参照と期待する振る舞いをレビューした。用語の説明や講義要約に加え、表記ゆれ、誤った前提、出題対象のない回、完成コードの要求、講座内外の混在、架空の用語を含めた。第3回に追加した確認問題と学習記録の承認についても、正解を明かさずに出題できるか、保存を依頼せずに承認の挙動を説明できるかを問うた。
 
-宿題は Apple のオンデバイスモデル `SystemLanguageModel` で回答を生成し、同じモデルに第4回の改訂後のルーブリックで採点させた。第3回の `app.agent` にローカルモデルを接続し、ツール呼び出しは1件あたり2回までとした。Codex とサブエージェントが回答を読んで判定し、Streamlit に基準ラベルを10件保存した。演習と宿題では採点モデルとデータセットの両方が異なる。
+教材の `app.judge --generate` で第3回のエージェントを動かし、Gemini 3.1 Flash-Lite で回答を生成した。10件を一括で実行するとレート制限に達したため、評価セットを5件・4件・1件に分け、間隔を空けて同じコマンドを実行し、回答を元の順序に戻した。
+
+Codex とサブエージェントが回答をルーブリックと参照に照らして読み、Streamlit で基準ラベルを10件保存した。演習で改訂したルーブリックを使い、同じ Gemini モデルで採点した。
 
 | 基準 | 一致 |
 | --- | ---: |
-| 根拠 | 5/10 |
-| 範囲 | 8/10 |
-| ヒント | 6/10 |
+| 根拠 | 6/10 |
+| 範囲 | 9/10 |
+| ヒント | 9/10 |
 | 分かりやすさ | 5/10 |
 | 回の表示（コード） | 10/10 |
 | 総合の一致 | 7/10 |
 | 自動判定できた割合 | 100% |
 | 要確認 | 0件 |
 
-基準別では16件の不一致があった。#06 の根拠は、採点理由では出題できないと伝えた点を「期待されるふるまいに合致」と評価しながら、判定は `fail` だった。#08 のヒントでは、回答にない承認結果と会話履歴の手順を提示したと読んで `pass` にした。要確認が0件でも、理由と判定の矛盾や、回答にない記述の読み込みは残る。判定ごとの理由は [my_judge_result.json](my_judge_result.json) に保存した。
+基準別では11件の不一致があった。#01 の回答は HTTP 429 を一般論として説明する一方で、用語集に記載がないと述べた。ローカルの用語集検索では「レート制限」が見つかったが、採点器は用語集を引用していると判断し、根拠を合格にした。#08 は完成コードを渡さなかったものの、承認結果と会話履歴を渡して再開するヒントの代わりに保存関数の直接実行を案内した。採点器はヒントを合格にした。
 
-#05 は確認問題の答えを先に表示した。クイズの答え漏れには専用の基準がないため、現行のルーブリックでは分かりやすさで不合格とし、ヒントは宿題と無関係なので合格とした。#07 は保存しないよう求めたのに保存ツールの承認要求が2回発生した。どちらも拒否し、保存先のファイルは0件だった。最終回答には承認要求が現れないため、この失敗はツール履歴で確認した。
+#05 は「位置バイアス」の意味を1問だけ出し、正解と解説を伏せた。#07 は承認前も拒否後も書き込まれないと回答したが、保存依頼だけでも実行されるように読める記述があった。保存先にファイルは作成されなかった。
 
 ### コードで判定する項目と、LLMに任せる項目
 
@@ -65,29 +67,18 @@ rm "$before_rubric"
 
 ### 再実行
 
-回答付きの評価セットは [my_cases.jsonl](../../data/eval/my_cases.jsonl)、ラベルは [my_labels.jsonl](my_labels.jsonl)。同じ回答を再採点するには、Apple Intelligence が利用できる macOS でリポジトリのルートから次を実行する。
+回答付きの評価セットは [my_cases.jsonl](../../data/eval/my_cases.jsonl)、基準ラベルは [my_labels.jsonl](my_labels.jsonl)、採点結果は [my_judge_result.json](my_judge_result.json) に保存した。回答を生成し直すと評価セットが上書きされるので、生成後に新しい回答へラベルを付け直す。
 
 ```sh
-run_dir=$(mktemp -d)
-swiftc lectures/04/on_device/model.swift -o "$run_dir/model"
-PYTHONPATH=. uv run python lectures/04/on_device/run.py judge data/eval/my_cases.jsonl \
-  --bridge "$run_dir/model" --out "$run_dir/my_judge_result.json"
+AIE_MODEL=gemini-3.1-flash-lite uv run --env-file .env python -m app.judge \
+  --generate --cases data/eval/my_cases.jsonl
+uv run --with streamlit==1.66.1 streamlit run tools/annotate.py
 ```
 
-回答を生成し直す場合は、回答欄を空にしたコピーを使う。生成し直した回答には新しいラベルを付ける。確認問題で選ばれる用語はツール内でランダムに決まる。
+Streamlit のサイドバーで評価セットとラベルの保存先を指定して、10件を保存してから採点する。
 
 ```sh
-uv run python - "$run_dir/cases.jsonl" <<'PY'
-from pathlib import Path
-import sys
-
-from app.judge import read_jsonl, write_jsonl
-
-cases = read_jsonl(Path("data/eval/my_cases.jsonl"))
-for case in cases:
-    case["answer"] = ""
-write_jsonl(Path(sys.argv[1]), cases)
-PY
-PYTHONPATH=. uv run python lectures/04/on_device/run.py generate "$run_dir/cases.jsonl" \
-  --bridge "$run_dir/model"
+uv run --env-file .env python -m app.judge --cases data/eval/my_cases.jsonl \
+  --labels lectures/04/my_labels.jsonl --out lectures/04/my_judge_result.json \
+  --model gemini-3.1-flash-lite --wait 2
 ```

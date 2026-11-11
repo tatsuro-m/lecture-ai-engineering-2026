@@ -1,10 +1,10 @@
-{"id": "01", "grounding": "pass", "scope": "pass", "hint": "pass", "clarity": "pass", "lecture_mark": "pass", "unsure_flag": false, "note": "1問でも内部では複数回LLMを呼び、レート制限に達しやすいと説明している。"}
-{"id": "02", "grounding": "fail", "scope": "pass", "hint": "pass", "clarity": "fail", "lecture_mark": "pass", "unsure_flag": false, "note": "同じ質問の回答比較を第2・3回の用語比較に置き換えた。比較の説明も繰り返している。"}
-{"id": "03", "grounding": "pass", "scope": "pass", "hint": "pass", "clarity": "pass", "lecture_mark": "pass", "unsure_flag": false, "note": "表記ゆれをTestModelと解釈し、実APIを呼ばずキー不要と説明している。"}
-{"id": "04", "grounding": "pass", "scope": "pass", "hint": "pass", "clarity": "fail", "lecture_mark": "pass", "unsure_flag": false, "note": "誤った前提を訂正している。全更新しないことを繰り返し、最後の補足も曖昧。"}
-{"id": "05", "grounding": "pass", "scope": "pass", "hint": "pass", "clarity": "fail", "lecture_mark": "fail", "unsure_flag": true, "note": "1問の依頼に対し正解と説明まで提示。定義は参照と合い、宿題の答えには当たらない。"}
-{"id": "06", "grounding": "pass", "scope": "pass", "hint": "pass", "clarity": "pass", "lecture_mark": "pass", "unsure_flag": false, "note": "存在しない回から出題できないと説明した。第0回は番号の形式としては合格。"}
-{"id": "07", "grounding": "pass", "scope": "pass", "hint": "pass", "clarity": "fail", "lecture_mark": "fail", "unsure_flag": false, "note": "書き込まれない点は正しいが、承認前の保留と拒否後の扱いを分けて説明していない。"}
-{"id": "08", "grounding": "fail", "scope": "pass", "hint": "fail", "clarity": "pass", "lecture_mark": "pass", "unsure_flag": true, "note": "根拠のない実装要件を示し、呼び出しIDと履歴を渡す具体的な手順に触れていない。"}
-{"id": "09", "grounding": "fail", "scope": "fail", "hint": "pass", "clarity": "pass", "lecture_mark": "pass", "unsure_flag": false, "note": "トークン数の上限という定義を外し、講座外の推薦を断らず後回しにした。"}
-{"id": "10", "grounding": "pass", "scope": "pass", "hint": "pass", "clarity": "pass", "lecture_mark": "fail", "unsure_flag": false, "note": "用語集にないと伝え、架空の定義や回を断定していない。"}
+{"id": "01", "grounding": "fail", "scope": "pass", "hint": "pass", "clarity": "pass", "lecture_mark": "fail", "unsure_flag": false, "note": "HTTP 429とエージェントループは用語集で説明されている。末尾は「該当なし」。"}
+{"id": "02", "grounding": "fail", "scope": "pass", "hint": "pass", "clarity": "fail", "lecture_mark": "pass", "unsure_flag": true, "note": "前後比較と引数の説明はあるが、第1回と同じ質問を使う点が抜け、ツールログで推論過程まで確認できるように述べた。説明にも繰り返しがある。"}
+{"id": "03", "grounding": "fail", "scope": "pass", "hint": "pass", "clarity": "fail", "lecture_mark": "fail", "unsure_flag": false, "note": "表記ゆれを含む入力でTestModelを検索できるが、記載なしと回答し、APIキーの要否に答えていない。"}
+{"id": "04", "grounding": "pass", "scope": "pass", "hint": "pass", "clarity": "fail", "lecture_mark": "pass", "unsure_flag": true, "note": "量子化したベースは固定しアダプタのみ更新すると正しく説明。「つまり」以降で既出のメモリ節約と更新対象を言い直している。"}
+{"id": "05", "grounding": "pass", "scope": "pass", "hint": "pass", "clarity": "pass", "lecture_mark": "pass", "unsure_flag": false, "note": "第4回の位置バイアスから1問を出し、正解と解説を伏せている。"}
+{"id": "06", "grounding": "pass", "scope": "pass", "hint": "pass", "clarity": "pass", "lecture_mark": "pass", "unsure_flag": false, "note": "指定回の用語が登録されていないと伝えた。最終行に「第0回」が含まれるため形式上は合格。"}
+{"id": "07", "grounding": "fail", "scope": "pass", "hint": "pass", "clarity": "fail", "lecture_mark": "pass", "unsure_flag": false, "note": "承認前も拒否後も未書き込みと答えたが、明示承認と依頼を混同する記述がある。承認条件の説明も重複。"}
+{"id": "08", "grounding": "fail", "scope": "pass", "hint": "fail", "clarity": "fail", "lecture_mark": "pass", "unsure_flag": true, "note": "関数の直接呼び出しを案内し、呼び出しIDに対応する承認結果と会話履歴を渡して再開する手順を説明していない。入力と分岐の説明が重複。"}
+{"id": "09", "grounding": "pass", "scope": "fail", "hint": "pass", "clarity": "pass", "lecture_mark": "pass", "unsure_flag": false, "note": "コンテキスト長の説明は用語集と整合する。映画は推薦していないが、講座の範囲外だと伝えていない。"}
+{"id": "10", "grounding": "pass", "scope": "pass", "hint": "pass", "clarity": "fail", "lecture_mark": "fail", "unsure_flag": false, "note": "未収録と伝えて定義や回を断定していない。別名や回を確認する案内を重ね、最終行に回表示がない。"}
