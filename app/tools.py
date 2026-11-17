@@ -126,12 +126,21 @@ def search_materials(query: str) -> str:
 
     queryに調べたい内容を指定する。
     """
+    return _search_materials(query, include_neighbors=False)
+
+
+def search_materials_with_neighbors(query: str) -> str:
+    """通常検索に、同じ資料の前後1ページの本文と引用情報を追加する。"""
+    return _search_materials(query, include_neighbors=True)
+
+
+def _search_materials(query: str, *, include_neighbors: bool) -> str:
     from google.genai.errors import APIError
     import sqlite3
     from app.retrieval import search
 
     try:
-        return json.dumps({"results": search(query)}, ensure_ascii=False)
+        return json.dumps({"results": search(query, include_neighbors=include_neighbors)}, ensure_ascii=False)
     except (ValueError, FileNotFoundError, sqlite3.Error) as e:
         return json.dumps({"error": str(e), "results": []}, ensure_ascii=False)
     except APIError as e:

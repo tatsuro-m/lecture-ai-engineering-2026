@@ -45,6 +45,19 @@ uv run python -m app.agent --trace "LoRAとQLoRAの違いは？"
 uv run python -m app.agent --graph --trace "LoRAとQLoRAの違いは？"
 ```
 
+実装課題では `--neighbors` を付けると、検索上位5ページに同じ資料の前後1ページを重複なく追加します（最大15ページ）。フラグなしの通常検索と、同じ質問で比較できます。
+
+```bash
+uv run python -m app.retrieval --neighbors "LoRA QLoRA 違い"
+uv run python -m app.agent --neighbors --trace "LoRAとQLoRAの違いは？"
+```
+
+第3回で作った用語集・確認問題・承認付き学習ログは `--legacy-tools` で使います。保存は本文を確認して承認した場合だけ行います。
+
+```bash
+uv run python -m app.agent --legacy-tools --trace "第2回から確認問題を1問出して"
+```
+
 教材本文や埋め込み設定を変更した場合は、実験用のDBを作ります。`AIE_RAG_DB` を設定したターミナルでは、作成と検索の両方がそのパスを使います。
 
 ```bash

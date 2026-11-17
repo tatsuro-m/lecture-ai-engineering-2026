@@ -124,8 +124,34 @@ def open_index(path: Path):
         db.close()
 
 
-def search(query: str) -> list[dict]:
-    """質問を埋め込み、近いページを最大RAG_TOP_K件返す。"""
+def expand_neighbors(hits: list[dict], db: sqlite3.Connection) -> list[dict]:
+    """検索順位を保ち、同じ索引・資料の前後1ページだけを重複なく追加する。
+
+    追加ページには検索距離を付けない。欠番を飛び越さず、追加ページからは
+    再展開しないため、結果は最大で元の検索件数の3倍になる。
+    """
+    results = []
+    seen = set()
+    for hit in hits:
+        if hit["page_id"] not in seen:
+            results.append(hit)
+            seen.add(hit["page_id"])
+    for hit in hits:
+        rows = db.execute("""
+            SELECT page_id, document_id, lecture, document_title, section, title, page, content
+            FROM chunks WHERE document_id = ? AND page IN (?, ?)
+            ORDER BY page, page_id
+        """, (hit["document_id"], hit["page"] - 1, hit["page"] + 1))
+        for row in rows:
+            page = dict(row)
+            if page["page_id"] not in seen:
+                results.append(page)
+                seen.add(page["page_id"])
+    return results
+
+
+def search(query: str, *, include_neighbors: bool = False) -> list[dict]:
+    """近いページを最大RAG_TOP_K件返す。指定時だけ前後1ページも追加する。"""
     if not isinstance(query, str) or not query.strip():
         raise ValueError("検索語が空です。")
     with open_index(RAG_DB) as db:
@@ -135,7 +161,8 @@ def search(query: str) -> list[dict]:
                    vec_distance_cosine(embedding, ?) AS distance
             FROM chunks ORDER BY distance, page_id LIMIT ?
         """, (sqlite_vec.serialize_float32(vector), RAG_TOP_K))
-        return [dict(row) for row in rows]
+        hits = [dict(row) for row in rows]
+        return expand_neighbors(hits, db) if include_neighbors else hits
 
 
 def search_graph(query: str) -> dict:
@@ -201,8 +228,9 @@ def run_full_context(agent, question: str, model, instructions: str, prompt_temp
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="エージェントを使わず、講義資料の検索だけを実行する")
     parser.add_argument("query", help="調べたい内容")
+    parser.add_argument("--neighbors", action="store_true", help="検索したページの前後1ページも取得する")
     args = parser.parse_args()
-    for i, result in enumerate(search(args.query), 1):
+    for i, result in enumerate(search(args.query, include_neighbors=args.neighbors), 1):
         print(f"\n{'=' * 60}\n検索結果 {i}\n{'=' * 60}")
         print(f"講義: {result['document_title']}")
         print(f"章: {result['section']}")

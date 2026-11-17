@@ -6,12 +6,12 @@
     uv run python -m app.agent --graph --trace "LoRAとQLoRAの違いは？"  # 検索からグラフをたどって回答
     uv run python -m app.agent --tree --trace "LoRAとQLoRAの違いは？"  # 目次をたどって回答
     uv run python -m app.agent --full-context --trace "LoRAとQLoRAの違いは？"  # 全資料を一度に渡す
-    uv run python -m app.agent --mcp --trace "LoRAとは？"        # 第5回: ツールを MCP サーバーから受け取る
-    uv run python -m app.agent --mcp --list-tools               # 第5回: モデルに見えるツール一覧（APIキー不要）
+    uv run python -m app.agent --mcp --trace "LoRAとは？"        # 第6回: ツールを MCP サーバーから受け取る
+    uv run python -m app.agent --mcp --list-tools               # 第6回: モデルに見えるツール一覧（APIキー不要）
 
 エージェント = モデル + ループ + ツール。
 モデルは tools.py の関数を「ツール」として呼び出し、その結果を見て回答を作る。
-第5回では、同じツールを MCP サーバー（app/mcp_server.py）経由で受け取る。
+第6回では、同じツールを MCP サーバー（app/mcp_server.py）経由で受け取る。
 """
 
 import argparse
@@ -21,7 +21,7 @@ from pathlib import Path
 from contextlib import nullcontext
 from time import perf_counter
 
-from pydantic_ai import Agent, DeferredToolRequests, DeferredToolResults, ToolDenied
+from pydantic_ai import Agent, DeferredToolRequests, DeferredToolResults, Tool, ToolDenied
 from pydantic_ai.exceptions import ModelHTTPError
 from fastmcp import Client
 from pydantic_ai.mcp import MCPToolset, StdioTransport
@@ -81,6 +81,15 @@ FULL_CONTEXT_PROMPT = "<資料>\n{materials}\n</資料>\n\n質問: {question}"
 agent = Agent(instructions=INSTRUCTIONS)
 agent.tool_plain(tools.search_materials)
 
+
+def neighbor_tool() -> Tool:
+    """検索処理だけを比較するため、モデルに渡す名前・説明・引数は通常検索と揃える。"""
+    return Tool(
+        tools.search_materials_with_neighbors,
+        name="search_materials", description=inspect.getdoc(tools.search_materials),
+    )
+
+
 LEGACY_INSTRUCTIONS = """\
 あなたはAIエンジニアリング講座（AIE2026）の学習支援エージェントです。
 - 用語や講座に固有のことを答える前に、必ず search_glossary で用語集を確認する。
@@ -103,7 +112,7 @@ legacy_agent.tool_plain(tools.get_lecture_summary)
 legacy_agent.tool_plain(tools.make_quiz)
 legacy_agent.tool_plain(requires_approval=True)(tools.save_learning_log)
 
-# 第5回: 使う MCP サーバーの設定ファイル。Claude Desktop や Cursor と同じ "mcpServers" 形式
+# 第6回: 使う MCP サーバーの設定ファイル。Claude Desktop や Cursor と同じ "mcpServers" 形式
 MCP_CONFIG = Path(__file__).resolve().parent / "mcp_servers.json"
 
 
@@ -131,7 +140,7 @@ def load_mcp_servers(config_path: Path = MCP_CONFIG) -> list[MCPToolset]:
 
 
 def build_mcp_agent(config_path: Path = MCP_CONFIG) -> Agent:
-    """第5回: 関数を直接登録する代わりに、MCP サーバーが公開するツールを使うエージェント。INSTRUCTIONS は同じ。"""
+    """第6回: 第3回の用語集向け指示文で、MCP サーバーのツールを使う。"""
     return Agent(instructions=LEGACY_INSTRUCTIONS, toolsets=load_mcp_servers(config_path))
 
 
@@ -214,8 +223,9 @@ def main() -> None:
     parser.add_argument("question", nargs="?")
     parser.add_argument("--trace", action="store_true", help="ツール呼び出しを表示する")
     modes = parser.add_mutually_exclusive_group()
+    modes.add_argument("--neighbors", action="store_true", help="通常検索に同じ資料の前後1ページを追加する")
     modes.add_argument("--legacy-tools", action="store_true", help="第3回: 用語集・確認問題・承認付き学習ログを使う")
-    modes.add_argument("--mcp", action="store_true", help="第5回: ツールを MCP サーバー（app/mcp_servers.json）から受け取る")
+    modes.add_argument("--mcp", action="store_true", help="第6回: ツールを MCP サーバー（app/mcp_servers.json）から受け取る")
     modes.add_argument("--graph", action="store_true", help="検索結果からグラフをたどり、候補ページを読んで答える")
     modes.add_argument("--tree", action="store_true", help="目次をたどり、必要なページを読んで答える")
     modes.add_argument("--full-context", action="store_true", help="検索せず、lectures.jsonの全資料を一度に渡す")
@@ -228,6 +238,8 @@ def main() -> None:
         mode = target.override(instructions=TREE_INSTRUCTIONS, tools=[tools.browse_tree])
     elif args.graph:
         mode = target.override(instructions=GRAPH_INSTRUCTIONS, tools=[tools.search_graph])
+    elif args.neighbors:
+        mode = target.override(tools=[neighbor_tool()])
     with mode:
         if args.list_tools:
             if args.full_context:
