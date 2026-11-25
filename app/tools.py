@@ -89,11 +89,17 @@ def get_lecture_summary(lecture: int) -> str:
 def make_quiz(lecture: int) -> str:
     """指定した回の用語集から確認問題を1問作り、問題と答えを返す。
 
-    「第2回の確認問題を出して」のような依頼に使う。lecture は講義の回番号。
+    「第2回の確認問題を出して」のような依頼に使う。lecture は講義の回番号（1始まりの整数）。
     """
-    candidates = [entry for entry in load_glossary() if entry["lecture"] == lecture]
+    glossary = load_glossary()
+    available = sorted({entry["lecture"] for entry in glossary})
+    candidates = [entry for entry in glossary if entry["lecture"] == lecture]
     if not candidates:
-        return f"第{lecture}回の用語が見つからないため、確認問題を作れません。"
+        available_text = ", ".join(f"第{n}回" for n in available)
+        return (
+            f"第{lecture}回の用語は用語集に登録されていないため、確認問題を作れません。"
+            f"指定できる回: {available_text}"
+        )
 
     entry = random.choice(candidates)
     return json.dumps(
